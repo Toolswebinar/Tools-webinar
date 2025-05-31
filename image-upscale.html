@@ -1,0 +1,40 @@
+let originalImage = null;
+
+function handleImageUpload(event) {
+  const file = event.target.files[0];
+  const reader = new FileReader();
+
+  reader.onload = function (e) {
+    const img = document.getElementById("originalImage");
+    img.src = e.target.result;
+    img.onload = () => {
+      originalImage = img;
+    };
+  };
+
+  reader.readAsDataURL(file);
+}
+
+function upscaleImage() {
+  if (!originalImage) return alert("Please upload an image first.");
+
+  const canvas = document.getElementById("upscaledCanvas");
+  const ctx = canvas.getContext("2d");
+
+  const width = originalImage.naturalWidth * 2;
+  const height = originalImage.naturalHeight * 2;
+
+  canvas.width = width;
+  canvas.height = height;
+
+  // Fake upscale by redrawing at 2x (for demo only)
+  ctx.drawImage(originalImage, 0, 0, width, height);
+}
+
+function downloadImage() {
+  const canvas = document.getElementById("upscaledCanvas");
+  const link = document.createElement("a");
+  link.download = "upscaled-image.png";
+  link.href = canvas.toDataURL();
+  link.click();
+}
